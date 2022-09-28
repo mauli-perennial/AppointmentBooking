@@ -8,6 +8,7 @@ import org.springframework.lang.Nullable;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 /**
  * This Entity is common for both patient and doctor as some  fields are necessary for both of them
@@ -120,4 +121,25 @@ public class User {
         return "User{" + "displayName='" + displayName + '\'' + '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User user = (User) o;
+        return getUserName().equals(user.getUserName()) && getPassword().equals(user.getPassword());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getUserName(), getPassword());
+    }
+
+    public User(String userName, String password, String role) {
+        this.userName = userName;
+        this.password = password;
+        this.role = role;
+    }
+    public boolean hasNameLike(String searchTerm){
+        return displayName.startsWith(searchTerm);
+    }
 }

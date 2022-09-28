@@ -4,7 +4,6 @@ import com.appointemnt.perennial.dao.AvailabilityRepository;
 import com.appointemnt.perennial.dao.DoctorPaginationRepository;
 import com.appointemnt.perennial.dao.DoctorRepository;
 import com.appointemnt.perennial.dao.UserRepository;
-import com.appointemnt.perennial.entity.Appointment;
 import com.appointemnt.perennial.entity.Availability;
 import com.appointemnt.perennial.entity.Doctor;
 import com.appointemnt.perennial.entity.User;
@@ -15,7 +14,10 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
 /**
  * This class is for business logic execution related to the doctor.
@@ -47,7 +49,8 @@ public class DoctorServiceImpl implements DoctorService {
     /**
      * loggers and message bundle file.
      */
-    public static final Logger log = Logger.getLogger(String.valueOf(Appointment.class));
+    @Autowired
+    public  Logger log ;
     public static final ResourceBundle bundle = ResourceBundle.getBundle("customMessage", Locale.CANADA_FRENCH);
 
     /**
@@ -108,11 +111,11 @@ public class DoctorServiceImpl implements DoctorService {
             user1.setMobile(user.getMobile());
             log.info(" in mobile update");
         }
-        if (user.getEmail() != null && !user.getEmail().isEmpty() && !user.getEmail().isBlank()) {
+        if (user.getEmail() != null && !user.getEmail().isEmpty()) {
             log.info("in email update");
             user1.setEmail(user.getEmail());
         }
-        if (user.getRegion() != null && !user.getRegion().isEmpty() && !user.getRegion().isBlank()) {
+        if (user.getRegion() != null && !user.getRegion().isEmpty()) {
             log.info("in region update");
             user1.setRegion(user.getRegion());
         }
@@ -131,7 +134,7 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     public List<Doctor> getAllDoctorBySpecialityAndRegion(String speciality, String region) {
-        return doctorPaginationRepository.findAllBySpecialityAndRegion(speciality, region);
+        return doctorPaginationRepository.findBySpecialityAndZRegion(speciality, region);
     }
 
     /**
@@ -165,4 +168,10 @@ public class DoctorServiceImpl implements DoctorService {
     public Availability getDoctorAvailability(long id) {
         return availabilityRepository.findByDoctorId(id);
     }
+
+    @Override
+    public List<Doctor> findAllDoctor(String searchTerm) {
+        return doctorRepository.findAll().stream().filter(f->f.hasNameLike(searchTerm)).collect(Collectors.toList());
+    }
+
 }

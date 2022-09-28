@@ -27,4 +27,13 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         return "user registration succssfull";
     }
+
+    @Override
+    public User authenticateUser(String userName, String password) {
+        User user = userRepository.findByUserNameAndPassword(userName,password);
+        if(user == null)
+            throw new RuntimeException("user not found pls check your credentials");
+        return user;
+    }
+
 }

@@ -5,6 +5,7 @@ import com.appointemnt.perennial.entity.Doctor;
 import com.appointemnt.perennial.entity.User;
 
 
+import javax.print.Doc;
 import java.util.List;
 
 public interface DoctorService {
@@ -22,4 +23,5 @@ public interface DoctorService {
     List<Doctor> getAllDoctorByNameAndRole(String displayName,String role);
     List<Doctor> getAllDoctorByRegionAndRole(String regin,String role);
     Availability getDoctorAvailability(long id);
+    List<Doctor> findAllDoctor(String searchTerm);
 }

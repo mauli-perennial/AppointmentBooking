@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: appointment-booking
+spec:
+  selector:
+    matchLabels:
+      app: appointment-booking
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: appointment-booking
+    spec:
+      containers:
+        - name: appointment-booking
+          image: maulisatav/appointment:2.5
+          ports:
+            - containerPort: 8080
+          env:  
+            - name: DB_HOST  
+              valueFrom :
+                configMapKeyRef :
+                  name : db-config
+                  key :  host
+
+            - name: DB_NAME  
+              valueFrom :
+                configMapKeyRef :
+                  name : db-config
+                  key :  dbName
+
+            - name: DB_USERNAME 
+              valueFrom :
+                secretKeyRef :
+                  name : mysql-secrets
+                  key :  username
+
+            - name: DB_PASSWORD 
+              valueFrom :
+                secretKeyRef :
+                  name : mysql-secrets
+                  key :  password
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: appointment-booking
+spec:
+  selector:
+    app: appointment-booking
+  ports:
+    - protocol: "TCP"
+      port: 8080 
+      targetPort: 8080 
+  type: NodePort

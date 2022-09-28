@@ -20,5 +20,5 @@ public interface DoctorRepository extends JpaRepository<Doctor, Long> {
     @Override
     <S extends Doctor> S save(S entity);
 
-
+    List<Doctor> findAll();
 }
